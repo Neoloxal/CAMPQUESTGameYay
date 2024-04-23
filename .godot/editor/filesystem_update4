@@ -1,0 +1,4 @@
+res://Scenes/character.tscn
+res://Scenes/enemy.tscn
+res://Scenes/main.tscn
+res://Scripts/character.gd

@@ -1,0 +1,8 @@
+TextureRect
+Sprite2D
+CanvasLayer
+Label
+CollisionShape2D
+Area2D
+ProgressBar
+AnimatedSprite2D

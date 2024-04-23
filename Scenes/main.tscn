@@ -1,0 +1,34 @@
+[gd_scene load_steps=5 format=3 uid="uid://bfpagde5spc53"]
+
+[ext_resource type="PackedScene" uid="uid://cx40f8ch8fxc6" path="res://Scenes/character.tscn" id="1_gmnu1"]
+[ext_resource type="PackedScene" uid="uid://d13f2kth0avn7" path="res://Scenes/enemy.tscn" id="2_4np33"]
+[ext_resource type="Script" path="res://Scripts/character.gd" id="2_k3jyj"]
+[ext_resource type="Texture2D" uid="uid://dctkbm0ajr5qe" path="res://texture/BG.png" id="4_v8ji5"]
+
+[node name="Main" type="Node2D"]
+
+[node name="Character" parent="." groups=["Hero"] instance=ExtResource("1_gmnu1")]
+position = Vector2(255, 415)
+script = ExtResource("2_k3jyj")
+Name = "Haybale"
+Yoffset = -80
+MaxHP = 75
+Strength = 4
+
+[node name="Enemy" parent="." groups=["Enemy"] instance=ExtResource("2_4np33")]
+position = Vector2(988, 213)
+Name = "Carpent"
+MaxHP = 25
+HPPL = 5
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+layer = -1
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("4_v8ji5")
+stretch_mode = 1
