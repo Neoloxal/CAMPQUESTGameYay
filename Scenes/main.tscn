@@ -14,11 +14,13 @@ Name = "Haybale"
 Yoffset = -80
 MaxHP = 75
 Strength = 4
+Sharpness = 2
 
 [node name="Enemy" parent="." groups=["Enemy"] instance=ExtResource("2_4np33")]
 position = Vector2(988, 213)
 Name = "Carpent"
 MaxHP = 25
+Level = 999
 HPPL = 5
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
