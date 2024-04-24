@@ -7,20 +7,21 @@
 
 [node name="Main" type="Node2D"]
 
-[node name="Character" parent="." groups=["Hero"] instance=ExtResource("1_gmnu1")]
+[node name="Character" parent="." node_paths=PackedStringArray("Chat") groups=["Hero"] instance=ExtResource("1_gmnu1")]
 position = Vector2(255, 415)
 script = ExtResource("2_k3jyj")
 Name = "Haybale"
+Chat = NodePath("../Chat Layer/Chat")
 Yoffset = -80
 MaxHP = 75
 Strength = 4
-Sharpness = 2
+Sharpness = 999
 
 [node name="Enemy" parent="." groups=["Enemy"] instance=ExtResource("2_4np33")]
 position = Vector2(988, 213)
 Name = "Carpent"
 MaxHP = 25
-Level = 999
+Level = 3
 HPPL = 5
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
@@ -34,3 +35,20 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("4_v8ji5")
 stretch_mode = 1
+
+[node name="Chat Layer" type="CanvasLayer" parent="."]
+
+[node name="Chat" type="RichTextLabel" parent="Chat Layer"]
+offset_right = 398.0
+offset_bottom = 221.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/normal_font_size = 25
+theme_override_font_sizes/bold_font_size = 25
+theme_override_font_sizes/italics_font_size = 25
+theme_override_font_sizes/bold_italics_font_size = 25
+theme_override_font_sizes/mono_font_size = 25
+bbcode_enabled = true
+text = "Chat:
+[color=#FF0000]CRIT![/color] 10 DMG!
+Carpent (3): [color=#FF0000]25/35[/color]"
