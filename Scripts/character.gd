@@ -2,6 +2,7 @@ extends Node2D
 
 @export_category("General")
 @export var Name = ""
+@export var SelfColor:String
 @export var Chat: RichTextLabel
 @export_category("Health")
 @export var Yoffset = 0
@@ -32,34 +33,40 @@ func print_damage(enemy,damage:int,crit:bool):
 	# CRIT DMG MUST BE MULTIPLIED IN FUNC!!!!!!!
 	var text = ""
 	if crit:
-		text = "[color=#FF0000]CRIT![/color] {DMG} DMG!
-{Name} ({Level}): [color=#FF0000]{HP}/{MaxHP}[/color] {Status}".format({
+		text = "[color={selfColor}][{selfName}][/color] [color=#FF0000]CRIT![/color] {DMG} DMG!
+[color={selfColor}][{selfName}][/color] {Name} ({Level}): [color=#FF0000]{HP}/{MaxHP}[/color] {Status}".format({
+	"selfColor":SelfColor,
+	"selfName":Name,
 	"DMG":damage, 
 	"Name":enemy.Name, "Level":enemy.Level, "HP":enemy.HP, "MaxHP":enemy.MaxHP, "Status":enemy.get_status()})
 	else:
-		text = "{DMG} DMG!
-{Name} ({Level}): [color=#FF0000]{HP}/{MaxHP}[/color] {Status}".format({
+		text = "[color={selfColor}][{selfName}][/color] {DMG} DMG!
+[color={selfColor}][{selfName}][/color] {Name} ({Level}): [color=#FF0000]{HP}/{MaxHP}[/color] {Status}".format({
+	"selfColor":SelfColor,
+	"selfName":Name,
 	"DMG":damage, 
 	"Name":enemy.Name, "Level":enemy.Level, "HP":enemy.HP, "MaxHP":enemy.MaxHP, "Status":enemy.get_status()})
 	print_rich(text)
-	Chat.text = text
+	Chat.chatText.insert(0, text)
 
 # Attacks
 func basic_attack():
 	var Enemys = get_tree().get_nodes_in_group("Enemy")
 	for enemy in Enemys:
-		var isCrit = get_crit()
-		var dmg = Strength - (enemy.Defense - 1)
-		if isCrit:
-			dmg *= 2
-		var realDMG = clamp_dmg(dmg,enemy)
-		enemy.HP -= realDMG
-		print_damage(enemy,dmg,isCrit)
+		if not enemy.isDead:
+			var isCrit = get_crit()
+			var dmg = Strength - (enemy.Defense - 1)
+			if isCrit:
+				dmg *= 2
+			var realDMG = clamp_dmg(dmg,enemy)
+			enemy.HP -= realDMG
+			print_damage(enemy,dmg,isCrit)
 
 func _ready():
 	%Animator.play("{Name}Idle".format({"Name":Name}))
 	
 	%Health.position.y += Yoffset
+	%RemoveHealth.position.y += Yoffset
 	
 	Chat.text = ""
 
@@ -67,6 +74,9 @@ func _process(_delta):
 	if HP != 0:
 		var tween = get_tree().create_tween()
 		tween.tween_property(%Health, "value", int(round((float(HP) / MaxHP) * 100)), .1).set_ease(Tween.EASE_IN_OUT)
+		await tween.finished
+		tween = get_tree().create_tween()
+		tween.tween_property(%RemoveHealth, "value", int(round((float(HP) / MaxHP) * 100)), .3).set_ease(Tween.EASE_IN_OUT)
 	%HealthDisplay.text = "{hp}/{maxhp}".format({"hp":HP,"maxhp":MaxHP})
 	
 	if Input.is_action_just_pressed("Use"):

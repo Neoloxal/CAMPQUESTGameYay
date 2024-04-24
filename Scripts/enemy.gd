@@ -12,6 +12,8 @@ extends Node2D
 @export  var HPPL = 0
 @onready var Status = []
 
+@onready var isDead = false
+
 func get_status():
 	var strStatus = ""
 	for status in Status:
@@ -22,18 +24,24 @@ func get_status():
 	return strStatus
 
 func _ready():
+	
 	%Animator.play("{Name}Idle".format({"Name":Name}))
 	
 	MaxHP = MaxHP + ((Level-1) * HPPL)
 	HP = MaxHP
 	%Health.position.y += Yoffset
+	%RemoveHealth.position.y += Yoffset
 
 func _process(_delta):
 	if HP <= 0:
+		isDead = true
 		var tween = get_tree().create_tween()
 		tween.tween_property(%Health, "value", int(round((float(HP) / MaxHP) * 100)), .1).set_ease(Tween.EASE_IN_OUT)
 		%HealthDisplay.text = "0/{MaxHP}".format(({"MaxHP":MaxHP}))
 		await tween.finished
+		tween = get_tree().create_tween()
+		tween.tween_property(%RemoveHealth, "value", int(round((float(HP) / MaxHP) * 100)), .1).set_ease(Tween.EASE_IN_OUT)
+		await  tween.finished
 		tween = get_tree().create_tween()
 		tween.tween_property(self, "scale", Vector2(-1,-1), 0.5).from_current().set_trans(Tween.TRANS_BOUNCE)
 		tween.play()
@@ -43,4 +51,7 @@ func _process(_delta):
 	if HP != 0:
 		var tween = get_tree().create_tween()
 		tween.tween_property(%Health, "value", int(round((float(HP) / MaxHP) * 100)), .1).set_ease(Tween.EASE_IN_OUT)
+		await tween.finished
+		tween = get_tree().create_tween()
+		tween.tween_property(%RemoveHealth, "value", int(round((float(HP) / MaxHP) * 100)), .3).set_ease(Tween.EASE_IN_OUT)
 	%HealthDisplay.text = "{HP}/{MaxHP}".format({"HP":HP,"MaxHP":MaxHP})

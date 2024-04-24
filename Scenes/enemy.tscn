@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://d13f2kth0avn7"]
+[gd_scene load_steps=18 format=3 uid="uid://d13f2kth0avn7"]
 
 [ext_resource type="Script" path="res://Scripts/enemy.gd" id="1_nlsw8"]
 [ext_resource type="Texture2D" uid="uid://dmqpvpyh36odn" path="res://texture/Enemys/Carpent/idle.png" id="2_rhxlu"]
@@ -83,8 +83,22 @@ animations = [{
 "speed": 5.0
 }]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_42pja"]
+bg_color = Color(0.321569, 0.321569, 0.321569, 0.996078)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0lmef"]
+bg_color = Color(1, 0.345098, 0.352941, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8q1gv"]
-bg_color = Color(0.321569, 0.321569, 0.321569, 1)
+bg_color = Color(0.321569, 0.321569, 0.321569, 0)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
@@ -104,6 +118,17 @@ script = ExtResource("1_nlsw8")
 unique_name_in_owner = true
 sprite_frames = SubResource("SpriteFrames_vd224")
 animation = &"Idle"
+
+[node name="RemoveHealth" type="ProgressBar" parent="."]
+unique_name_in_owner = true
+offset_left = -61.0
+offset_top = -96.0
+offset_right = 53.0
+offset_bottom = -69.0
+theme_override_styles/background = SubResource("StyleBoxFlat_42pja")
+theme_override_styles/fill = SubResource("StyleBoxFlat_0lmef")
+value = 40.0
+show_percentage = false
 
 [node name="Health" type="ProgressBar" parent="."]
 unique_name_in_owner = true

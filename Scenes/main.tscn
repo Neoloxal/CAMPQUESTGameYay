@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://bfpagde5spc53"]
+[gd_scene load_steps=6 format=3 uid="uid://bfpagde5spc53"]
 
 [ext_resource type="PackedScene" uid="uid://cx40f8ch8fxc6" path="res://Scenes/character.tscn" id="1_gmnu1"]
 [ext_resource type="PackedScene" uid="uid://d13f2kth0avn7" path="res://Scenes/enemy.tscn" id="2_4np33"]
 [ext_resource type="Script" path="res://Scripts/character.gd" id="2_k3jyj"]
 [ext_resource type="Texture2D" uid="uid://dctkbm0ajr5qe" path="res://texture/BG.png" id="4_v8ji5"]
+[ext_resource type="Script" path="res://Scripts/Chat.gd" id="5_ak64a"]
 
 [node name="Main" type="Node2D"]
 
@@ -11,11 +12,12 @@
 position = Vector2(255, 415)
 script = ExtResource("2_k3jyj")
 Name = "Haybale"
+SelfColor = "#FFBB00"
 Chat = NodePath("../Chat Layer/Chat")
 Yoffset = -80
 MaxHP = 75
 Strength = 4
-Sharpness = 999
+Sharpness = 2
 
 [node name="Enemy" parent="." groups=["Enemy"] instance=ExtResource("2_4np33")]
 position = Vector2(988, 213)
@@ -40,7 +42,7 @@ stretch_mode = 1
 
 [node name="Chat" type="RichTextLabel" parent="Chat Layer"]
 offset_right = 398.0
-offset_bottom = 221.0
+offset_bottom = 642.0
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 10
 theme_override_font_sizes/normal_font_size = 25
@@ -52,3 +54,4 @@ bbcode_enabled = true
 text = "Chat:
 [color=#FF0000]CRIT![/color] 10 DMG!
 Carpent (3): [color=#FF0000]25/35[/color]"
+script = ExtResource("5_ak64a")
