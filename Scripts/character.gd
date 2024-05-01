@@ -31,21 +31,16 @@ func get_crit():
 
 func print_damage(enemy,damage:int,crit:bool):
 	# CRIT DMG MUST BE MULTIPLIED IN FUNC!!!!!!!
-	var text = ""
+	var text = "{DMG} DMG!
+[color={selfColor}][{selfName}][/color] [color={enemyColor}]{Name}[/color] ({Level}): [color=#FF0000]{HP}/{MaxHP}[/color] {Status}".format({
+	"selfColor":SelfColor,
+	"selfName":Name,
+	"DMG":damage, 
+	"enemyColor":enemy.SelfColor, "Name":enemy.Name, "Level":enemy.Level, "HP":enemy.HP, "MaxHP":enemy.MaxHP, "Status":enemy.get_status()
+	})
 	if crit:
-		text = "[color={selfColor}][{selfName}][/color] [color=#FF0000]CRIT![/color] {DMG} DMG!
-[color={selfColor}][{selfName}][/color] {Name} ({Level}): [color=#FF0000]{HP}/{MaxHP}[/color] {Status}".format({
-	"selfColor":SelfColor,
-	"selfName":Name,
-	"DMG":damage, 
-	"Name":enemy.Name, "Level":enemy.Level, "HP":enemy.HP, "MaxHP":enemy.MaxHP, "Status":enemy.get_status()})
-	else:
-		text = "[color={selfColor}][{selfName}][/color] {DMG} DMG!
-[color={selfColor}][{selfName}][/color] {Name} ({Level}): [color=#FF0000]{HP}/{MaxHP}[/color] {Status}".format({
-	"selfColor":SelfColor,
-	"selfName":Name,
-	"DMG":damage, 
-	"Name":enemy.Name, "Level":enemy.Level, "HP":enemy.HP, "MaxHP":enemy.MaxHP, "Status":enemy.get_status()})
+		text = "[color=#FF0000]CRIT![/color]" + text
+	text = "[color={selfColor}][{selfName}][/color] ".format({"selfColor":SelfColor, "selfName":Name}) + text
 	print_rich(text)
 	Chat.chatText.insert(0, text)
 

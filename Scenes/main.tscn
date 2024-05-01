@@ -22,9 +22,11 @@ Sharpness = 2
 [node name="Enemy" parent="." groups=["Enemy"] instance=ExtResource("2_4np33")]
 position = Vector2(988, 213)
 Name = "Carpent"
+SelfColor = "#00BB00"
 MaxHP = 25
-Level = 3
 HPPL = 5
+Level = 3
+Moves = ["bite"]
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 layer = -1
