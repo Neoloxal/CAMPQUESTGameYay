@@ -13,6 +13,9 @@ extends Node2D
 @export var Sharpness = 0
 @onready var CritChance = int(round((1 - pow(0.99, float(Sharpness))) * 100))
 
+signal turnFinished
+signal UIFinished
+
 # Attack Utils
 func clamp_dmg(dmg:int,enemy):
 	if dmg > enemy.HP:
@@ -41,8 +44,7 @@ func print_damage(enemy,damage:int,crit:bool):
 	if crit:
 		text = "[color=#FF0000]CRIT![/color]" + text
 	text = "[color={selfColor}][{selfName}][/color] ".format({"selfColor":SelfColor, "selfName":Name}) + text
-	print_rich(text)
-	Chat.chatText.insert(0, text)
+	Chat.say(text)
 
 # Attacks
 func basic_attack():
@@ -56,6 +58,7 @@ func basic_attack():
 			var realDMG = clamp_dmg(dmg,enemy)
 			enemy.HP -= realDMG
 			print_damage(enemy,dmg,isCrit)
+			return
 
 func _ready():
 	%Animator.play("{Name}Idle".format({"Name":Name}))
@@ -73,6 +76,14 @@ func _process(_delta):
 		tween = get_tree().create_tween()
 		tween.tween_property(%RemoveHealth, "value", int(round((float(HP) / MaxHP) * 100)), .3).set_ease(Tween.EASE_IN_OUT)
 	%HealthDisplay.text = "{hp}/{maxhp}".format({"hp":HP,"maxhp":MaxHP})
-	
-	if Input.is_action_just_pressed("Use"):
-		basic_attack()
+
+func attackUI():
+	while not Input.is_action_just_pressed("Use"):
+		pass
+	basic_attack()
+	emit_signal("UIFinished")
+
+func playerturn():
+	attackUI()
+	await UIFinished
+	emit_signal("turnFinished")

@@ -3,6 +3,7 @@ extends Node2D
 @export_category("General")
 @export var Name:String
 @export var SelfColor:String
+@export var Chat: RichTextLabel
 @export_category("Health")
 @export var Yoffset = 0
 @export var MaxHP = 100
@@ -14,9 +15,11 @@ extends Node2D
 @export var Level = 1
 @onready var Status = []
 @export_category("AI")
-@export var Moves:Array
+@export var Moves:Array[String]
 
 @onready var isDead = false
+
+signal turnFinished
 
 # Misc
 func Death():
@@ -34,11 +37,44 @@ func Death():
 	await  tween.finished
 	queue_free()
 
+func clamp_dmg(dmg:int,enemy):
+	if dmg > enemy.HP:
+		dmg = enemy.HP
+	return dmg
+
+func get_crit(CritChance):
+	""" MAKE SURE ATTACK HAS
+		if isCrit: 
+			dmg *= 2
+	"""
+	var isCrit = false
+	if Utils.rng.randi_range(0,100) <= CritChance:
+		isCrit = true
+	return isCrit
+
+func print_damage(enemy,damage:int,crit:bool):
+	# CRIT DMG MUST BE MULTIPLIED IN FUNC!!!!!!!
+	var text = "{DMG} DMG!
+[color={selfColor}][{selfName}][/color] [color={enemyColor}]{Name}[/color]: [color=#FF0000]{HP}/{MaxHP}[/color]".format({
+	"selfColor":SelfColor,
+	"selfName":Name,
+	"DMG":damage, 
+	"enemyColor":enemy.SelfColor, "Name":enemy.Name, "HP":enemy.HP, "MaxHP":enemy.MaxHP
+	})
+	if crit:
+		text = "[color=#FF0000]CRIT![/color]" + text
+	text = "[color={selfColor}][{selfName}][/color] ".format({"selfColor":SelfColor, "selfName":Name}) + text
+	Chat.say(text)
+
 # Moves
 func bite():
-	print("{Name} {Level}".format({"Name":Name,"Level":Level}))
-	const RESULT = "SUCCSEUS"
-	return RESULT
+	var heroes = get_tree().get_nodes_in_group("Hero")
+	for hero in heroes:
+		if hero.HP != 0:
+			var DMG = 6 + (Level - 1)
+			#var isCrit = get_crit(.75)
+			print_damage(hero, DMG, false)
+			return
 
 func get_status():
 	var strStatus = ""
@@ -74,4 +110,7 @@ func _process(_delta):
 		"name":Name,
 		"level":Level
 		})
-	#Moves[0].call()
+
+func enemyturn():
+	call(Moves[Utils.rng.randi_range(0,Moves.size()-1)])
+	emit_signal("turnFinished")
