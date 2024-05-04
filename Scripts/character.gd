@@ -42,7 +42,7 @@ func print_damage(enemy,damage:int,crit:bool):
 	"enemyColor":enemy.SelfColor, "Name":enemy.Name, "Level":enemy.Level, "HP":enemy.HP, "MaxHP":enemy.MaxHP, "Status":enemy.get_status()
 	})
 	if crit:
-		text = "[color=#FF0000]CRIT![/color]" + text
+		text = "[color=#FF0000]CRIT![/color] " + text
 	text = "[color={selfColor}][{selfName}][/color] ".format({"selfColor":SelfColor, "selfName":Name}) + text
 	Chat.say(text)
 
@@ -67,6 +67,10 @@ func _ready():
 	%RemoveHealth.position.y += Yoffset
 	
 	Chat.text = ""
+	
+	var heroes = get_tree().get_nodes_in_group("Hero")
+	for hero in heroes:
+		pass #hero.connect(UIFinished, _onUIFinished())
 
 func _process(_delta):
 	if HP != 0:
@@ -77,13 +81,17 @@ func _process(_delta):
 		tween.tween_property(%RemoveHealth, "value", int(round((float(HP) / MaxHP) * 100)), .3).set_ease(Tween.EASE_IN_OUT)
 	%HealthDisplay.text = "{hp}/{maxhp}".format({"hp":HP,"maxhp":MaxHP})
 
+func playerturn():
+	Utils.heroesTurn = true
+	attackUI()
+
 func attackUI():
 	while not Input.is_action_just_pressed("Use"):
-		pass
+		await get_tree().process_frame
 	basic_attack()
 	emit_signal("UIFinished")
 
-func playerturn():
-	attackUI()
-	await UIFinished
+
+func _onUIFinished():
+	Utils.heroesTurn = false
 	emit_signal("turnFinished")
