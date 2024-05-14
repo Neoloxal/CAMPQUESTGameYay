@@ -1,3 +1,7 @@
+body::-webkit-scrollbar {
+    display: none;
+}
+
 body {
     color: wheat;
     font-family: Arial, Helvetica, sans-serif;
