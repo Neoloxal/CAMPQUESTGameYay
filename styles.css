@@ -20,3 +20,7 @@ body {
     color: rgb(0, 157, 255);
     text-decoration: none;
 }
+
+.link:hover {
+    text-decoration: underline;
+}
