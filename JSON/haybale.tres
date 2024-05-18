@@ -1,0 +1,17 @@
+[gd_resource type="JSON" format=3 uid="uid://54sb1md8x7qg"]
+
+[resource]
+data = {
+"general": {
+"color": "#FFBB00",
+"name": "Haybale"
+},
+"health": {
+"maxhp": 75.0,
+"yoffset": -80.0
+},
+"stats": {
+"sharpess": 2.0,
+"strength": 4.0
+}
+}

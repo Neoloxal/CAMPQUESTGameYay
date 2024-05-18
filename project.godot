@@ -18,6 +18,7 @@ config/icon="res://texture/logo.png"
 [autoload]
 
 Utils="*res://Scripts/Global/Utils.gd"
+Moves="*res://Scripts/moves.gd"
 
 [display]
 

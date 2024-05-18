@@ -1,9 +1,3 @@
 res://Scenes/main.tscn
-res://Scripts/enemy.gd
-res://Scenes/character.tscn
-res://Scenes/enemy.tscn
-res://Scripts/character.gd
-res://Scripts/turnmanager.gd
-res://Scripts/Chat.gd
 res://Scripts/moves.gd
-res://Scripts/Global/Utils.gd
+res://Scripts/character.gd

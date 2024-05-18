@@ -1,8 +1,9 @@
 extends Node2D
 
 @export_category("General")
-@export var Name = ""
-@export var SelfColor:String
+@export var ResourceJSON:JSON
+@onready var Name:String
+@onready var SelfColor:String
 @export var Chat: RichTextLabel
 @export_category("Health")
 @export var Yoffset = 0
@@ -61,6 +62,11 @@ func basic_attack():
 			return
 
 func _ready():
+	var ResourceJSONData = ResourceJSON.get_data()
+	Name = ResourceJSONData["general"]["name"]
+	SelfColor = ResourceJSONData["general"]["color"]
+	Chat.say(Name)
+	
 	%Animator.play("{Name}Idle".format({"Name":Name}))
 	
 	%Health.position.y += Yoffset
@@ -88,7 +94,7 @@ func playerturn():
 func attackUI():
 	while not Input.is_action_just_pressed("Use"):
 		await get_tree().process_frame
-	basic_attack()
+	var attack = Moves.basic_attack.new(get_tree().get_first_node_in_group("Enemy"))
 	emit_signal("UIFinished")
 
 
