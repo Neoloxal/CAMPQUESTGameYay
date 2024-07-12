@@ -86,7 +86,6 @@ func get_status():
 	return strStatus
 
 func _ready():
-	
 	%Animator.play("{Name}Idle".format({"Name":Name}))
 	
 	MaxHP = MaxHP + ((Level-1) * HPPL)

@@ -147,7 +147,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_874u0")
 }],
 "loop": true,
-"name": &"HaybaleIdle",
+"name": &"Hay BaleIdle",
 "speed": 5.0
 }, {
 "frames": [{
@@ -193,7 +193,7 @@ script = ExtResource("1_c7o1p")
 [node name="Animator" type="AnimatedSprite2D" parent="."]
 unique_name_in_owner = true
 sprite_frames = SubResource("SpriteFrames_vd224")
-animation = &"Idle"
+animation = &"Hay BaleIdle"
 
 [node name="RemoveHealth" type="ProgressBar" parent="."]
 unique_name_in_owner = true

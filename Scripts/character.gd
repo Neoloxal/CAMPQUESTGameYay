@@ -14,6 +14,13 @@ extends Node2D
 @export var Sharpness = 0
 @onready var CritChance = int(round((1 - pow(0.99, float(Sharpness))) * 100))
 
+enum State {
+	WAITING,
+	PLAYER_TURN
+}
+
+var current_state = State.WAITING
+
 signal turnFinished
 signal UIFinished
 
@@ -79,6 +86,14 @@ func _ready():
 		pass #hero.connect(UIFinished, _onUIFinished())
 
 func _process(_delta):
+	match current_state:
+		State.WAITING:
+			pass
+		State.PLAYER_TURN:
+			if Input.is_action_just_pressed("Use"):
+				var attack = Moves.basic_attack.new()
+				Utils.heroesTurn = false
+				emit_signal("turnFinished")
 	if HP != 0:
 		var tween = get_tree().create_tween()
 		tween.tween_property(%Health, "value", int(round((float(HP) / MaxHP) * 100)), .1).set_ease(Tween.EASE_IN_OUT)
@@ -89,15 +104,7 @@ func _process(_delta):
 
 func playerturn():
 	Utils.heroesTurn = true
-	attackUI()
+	change_state(State.PLAYER_TURN)
 
-func attackUI():
-	while not Input.is_action_just_pressed("Use"):
-		await get_tree().process_frame
-	var attack = Moves.basic_attack.new(get_tree().get_first_node_in_group("Enemy"))
-	emit_signal("UIFinished")
-
-
-func _onUIFinished():
-	Utils.heroesTurn = false
-	emit_signal("turnFinished")
+func change_state(next_state):
+	current_state = next_state
