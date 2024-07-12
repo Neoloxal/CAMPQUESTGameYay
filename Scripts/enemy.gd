@@ -73,6 +73,7 @@ func bite():
 		if hero.HP != 0:
 			var DMG = 6 + (Level - 1)
 			#var isCrit = get_crit(.75)
+			hero.HP -= DMG
 			print_damage(hero, DMG, false)
 			return
 

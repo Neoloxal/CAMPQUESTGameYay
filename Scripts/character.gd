@@ -91,7 +91,7 @@ func _process(_delta):
 			pass
 		State.PLAYER_TURN:
 			if Input.is_action_just_pressed("Use"):
-				var attack = Moves.basic_attack.new()
+				basic_attack()
 				Utils.heroesTurn = false
 				emit_signal("turnFinished")
 	if HP != 0:

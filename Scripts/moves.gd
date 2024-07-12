@@ -1,5 +1,10 @@
 extends Node
 
+# neo i have no goddamn idea what you were on about with this but i do NOT think this is how classes work
+
+func use_move(used_move):
+	pass
+
 class move:
 	func init_values(targets:Array, dmg:float, critChance:float) -> void:
 		var DMG = dmg
