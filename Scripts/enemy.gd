@@ -61,18 +61,21 @@ func get_crit(CritChance):
 		isCrit = true
 	return isCrit
 
-func print_damage(enemy,damage:int,crit:bool):
+func print_damage(enemy, damage:int, crit:bool, used_move):
 	# CRIT DMG MUST BE MULTIPLIED IN FUNC!!!!!!!
-	var text = "{DMG} DMG!
-[color={selfColor}][{selfName}][/color] [color={enemyColor}]{Name}[/color]: [color=#FF0000]{HP}/{MaxHP}[/color]".format({
+	var text = "[b]'S TURN[/b]
+[color={selfColor}]{selfName}[/color] ({Level}) uses {move} on {Name}, dealing {DMG} DMG!
+[color={enemyColor}]{Name}[/color]: [color=#FF0000]{HP}/{MaxHP}[/color]".format({
 	"selfColor":SelfColor,
 	"selfName":Name,
-	"DMG":damage, 
+	"DMG":damage,
+	"move": used_move,
+	"Level":Level,
 	"enemyColor":enemy.SelfColor, "Name":enemy.Name, "HP":enemy.HP, "MaxHP":enemy.MaxHP
 	})
 	if crit:
 		text = "[color=#FF0000]CRIT![/color]" + text
-	text = "[color={selfColor}][{selfName}][/color] ".format({"selfColor":SelfColor, "selfName":Name}) + text
+	text = "[b][color={selfColor}]{selfName}[/color] ({Level})[/b]".format({"selfColor":SelfColor, "selfName":Name.to_upper(), "Level":Level}) + text
 	Chat.say(text)
 
 func Death():
@@ -98,7 +101,7 @@ func bite():
 			var DMG = 6 + (Level - 1)
 			#var isCrit = get_crit(.75)
 			hero.HP -= DMG
-			print_damage(hero, DMG, false)
+			print_damage(hero, DMG, false, "Bite")
 			return
 
 func get_status():

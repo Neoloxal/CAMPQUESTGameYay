@@ -1,6 +1,5 @@
 extends Node
 
-# neo i have no goddamn idea what you were on about with this but i do NOT think this is how classes work
 var ATK
 var TARGETS
 var CritChance
@@ -45,14 +44,25 @@ func use() -> int:
 
 func print_damage(enemy, damage:int, crit:bool):
 	# CRIT DMG MUST BE MULTIPLIED IN FUNC!!!!!!!
-	var text = "{DMG} DMG!
-[color={selfColor}][{selfName}][/color] [color={enemyColor}]{Name}[/color] ({Level}): [color=#FF0000]{HP}/{MaxHP}[/color] {Status}".format({
-		"selfColor":SelfColor,
-		"selfName":Name,
-		"DMG":damage, 
+	var text = "[b]'S TURN[/b]
+"
+	var damageText
+	if !crit:
+		damageText = "[color={selfColor}]{selfName}[/color] uses {move} on {Name}, dealing {DMG} DMG!"
+	else:
+		damageText = "[color={selfColor}]{selfName}[/color] uses {move} on {Name}, [color=#FF0000]CRITICAL HITTING[/color] and dealing {DMG} DMG!"
+	text += damageText + "
+"
+	text += "[color={enemyColor}]{Name}[/color] ({Level}): [color=#FF0000]{HP}/{MaxHP}[/color] {Status}"
+	if enemy.HP <= 0:
+		text += "
+[b][color={enemyColor}]{Name}[/color] ({Level}) FALLS![/b]".format({"Name":enemy.Name.to_upper()})
+	text = text.format({
+		"selfColor": SelfColor,
+		"selfName": Name,
+		"move": "Basic Attack",
+		"DMG":damage,
 		"enemyColor":enemy.SelfColor, "Name":enemy.Name, "Level":enemy.Level, "HP":enemy.HP, "MaxHP":enemy.MaxHP, "Status":enemy.get_status()
 	})
-	if crit:
-		text = "[color=#FF0000]CRIT![/color] " + text
-	text = "[color={selfColor}][{selfName}][/color] ".format({"selfColor":SelfColor, "selfName":Name}) + text
+	text = "[b][color={selfColor}]{selfName}[/color][/b]".format({"selfColor":SelfColor, "selfName":Name.to_upper()}) + text
 	Chat.say(text)

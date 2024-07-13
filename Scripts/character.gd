@@ -12,7 +12,7 @@ extends Node2D
 @export_category("Stats")
 @export var Strength = 0
 @export var Sharpness = 0
-@onready var CritChance = int(round((1 - pow(0.99, float(Sharpness))) * 100))
+@onready var CritChance = float((1 - pow(0.99, float(Sharpness))) * 100)
 
 enum State {
 	WAITING,
@@ -72,7 +72,7 @@ func print_damage(enemy,damage:int,crit:bool):
 	})
 	if crit:
 		text = "[color=#FF0000]CRIT![/color] " + text
-	text = "[color={selfColor}][{selfName}][/color] ".format({"selfColor":SelfColor, "selfName":Name}) + text
+	text = "[color={selfColor}]{selfName}[/color] ".format({"selfColor":SelfColor, "selfName":Name.to_upper()}) + text
 	Chat.say(text)
 
 func playerturn():
