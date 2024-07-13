@@ -21,21 +21,30 @@ extends Node2D
 
 signal turnFinished
 
-# Misc
-func Death():
-	isDead = true
-	var tween = get_tree().create_tween()
-	tween.tween_property(%Health, "value", int(round((float(HP) / MaxHP) * 100)), .1).set_ease(Tween.EASE_IN_OUT)
-	%HealthDisplay.text = "0/{MaxHP}".format(({"MaxHP":MaxHP}))
-	await tween.finished
-	tween = get_tree().create_tween()
-	tween.tween_property(%RemoveHealth, "value", int(round((float(HP) / MaxHP) * 100)), .1).set_ease(Tween.EASE_IN_OUT)
-	await  tween.finished
-	tween = get_tree().create_tween()
-	tween.tween_property(self, "scale", Vector2(-1,-1), 0.5).from_current().set_trans(Tween.TRANS_BOUNCE)
-	tween.play()
-	await  tween.finished
-	queue_free()
+func _ready():
+	%Animator.play("{Name}Idle".format({"Name":Name}))
+	
+	MaxHP = MaxHP + ((Level-1) * HPPL)
+	HP = MaxHP
+	%Health.position.y += Yoffset
+	%RemoveHealth.position.y += Yoffset
+
+func _process(_delta):
+	if HP <= 0:
+		Death()
+		
+	if HP != 0:
+		var tween = get_tree().create_tween()
+		tween.tween_property(%Health, "value", int(round((float(HP) / MaxHP) * 100)), .1).set_ease(Tween.EASE_IN_OUT)
+		await tween.finished
+		tween = get_tree().create_tween()
+		tween.tween_property(%RemoveHealth, "value", int(round((float(HP) / MaxHP) * 100)), .3).set_ease(Tween.EASE_IN_OUT)
+	%HealthDisplay.text = "{HP}/{MaxHP}".format({"HP":HP,"MaxHP":MaxHP})
+	%NameDisplay.text = "[color={selfColor}]{name}[/color] ({level})".format({
+		"selfColor":SelfColor,
+		"name":Name,
+		"level":Level
+		})
 
 func clamp_dmg(dmg:int,enemy):
 	if dmg > enemy.HP:
@@ -66,6 +75,21 @@ func print_damage(enemy,damage:int,crit:bool):
 	text = "[color={selfColor}][{selfName}][/color] ".format({"selfColor":SelfColor, "selfName":Name}) + text
 	Chat.say(text)
 
+func Death():
+	isDead = true
+	var tween = get_tree().create_tween()
+	tween.tween_property(%Health, "value", int(round((float(HP) / MaxHP) * 100)), .1).set_ease(Tween.EASE_IN_OUT)
+	%HealthDisplay.text = "0/{MaxHP}".format(({"MaxHP":MaxHP}))
+	await tween.finished
+	tween = get_tree().create_tween()
+	tween.tween_property(%RemoveHealth, "value", int(round((float(HP) / MaxHP) * 100)), .1).set_ease(Tween.EASE_IN_OUT)
+	await  tween.finished
+	tween = get_tree().create_tween()
+	tween.tween_property(self, "scale", Vector2(-1,-1), 0.5).from_current().set_trans(Tween.TRANS_BOUNCE)
+	tween.play()
+	await  tween.finished
+	queue_free()
+
 # Moves
 func bite():
 	var heroes = get_tree().get_nodes_in_group("Hero")
@@ -85,31 +109,6 @@ func get_status():
 		else:
 			strStatus = strStatus + status
 	return strStatus
-
-func _ready():
-	%Animator.play("{Name}Idle".format({"Name":Name}))
-	
-	MaxHP = MaxHP + ((Level-1) * HPPL)
-	HP = MaxHP
-	%Health.position.y += Yoffset
-	%RemoveHealth.position.y += Yoffset
-
-func _process(_delta):
-	if HP <= 0:
-		Death()
-		
-	if HP != 0:
-		var tween = get_tree().create_tween()
-		tween.tween_property(%Health, "value", int(round((float(HP) / MaxHP) * 100)), .1).set_ease(Tween.EASE_IN_OUT)
-		await tween.finished
-		tween = get_tree().create_tween()
-		tween.tween_property(%RemoveHealth, "value", int(round((float(HP) / MaxHP) * 100)), .3).set_ease(Tween.EASE_IN_OUT)
-	%HealthDisplay.text = "{HP}/{MaxHP}".format({"HP":HP,"MaxHP":MaxHP})
-	%NameDisplay.text = "[color={selfColor}]{name}[/color] ({level})".format({
-		"selfColor":SelfColor,
-		"name":Name,
-		"level":Level
-		})
 
 func enemyturn():
 	call(Moves[Utils.rng.randi_range(0,Moves.size()-1)])

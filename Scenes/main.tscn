@@ -1,9 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://bfpagde5spc53"]
+[gd_scene load_steps=7 format=3 uid="uid://bfpagde5spc53"]
 
 [ext_resource type="PackedScene" uid="uid://cx40f8ch8fxc6" path="res://Scenes/character.tscn" id="1_gmnu1"]
 [ext_resource type="Script" path="res://Scripts/turnmanager.gd" id="1_xrpo4"]
 [ext_resource type="PackedScene" uid="uid://d13f2kth0avn7" path="res://Scenes/enemy.tscn" id="2_4np33"]
-[ext_resource type="Script" path="res://Scripts/character.gd" id="2_k3jyj"]
 [ext_resource type="JSON" uid="uid://54sb1md8x7qg" path="res://JSON/haybale.tres" id="4_fwdfi"]
 [ext_resource type="Texture2D" uid="uid://dctkbm0ajr5qe" path="res://texture/BG.png" id="4_v8ji5"]
 [ext_resource type="Script" path="res://Scripts/Chat.gd" id="5_ak64a"]
@@ -14,7 +13,6 @@ Chat = NodePath("Chat Layer/Chat")
 
 [node name="Character" parent="." node_paths=PackedStringArray("Chat") groups=["Hero"] instance=ExtResource("1_gmnu1")]
 position = Vector2(255, 415)
-script = ExtResource("2_k3jyj")
 ResourceJSON = ExtResource("4_fwdfi")
 Chat = NodePath("../Chat Layer/Chat")
 Yoffset = -80
