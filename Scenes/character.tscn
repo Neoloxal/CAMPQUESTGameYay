@@ -1,6 +1,6 @@
 [gd_scene load_steps=32 format=3 uid="uid://cx40f8ch8fxc6"]
 
-[ext_resource type="Script" path="res://Scripts/enemy.gd" id="1_c7o1p"]
+[ext_resource type="Script" path="res://Scripts/character.gd" id="1_2l68p"]
 [ext_resource type="Texture2D" uid="uid://bcxbosnc4qsc8" path="res://texture/Characters/Ace/Idle/frame_0_delay-0.1s.png" id="1_w2bqy"]
 [ext_resource type="Texture2D" uid="uid://vchgvwm5j3p8" path="res://texture/Characters/Ace/Idle/frame_1_delay-0.1s.png" id="2_jq80m"]
 [ext_resource type="Texture2D" uid="uid://bo3bvysithmv2" path="res://texture/Characters/Ace/Idle/frame_2_delay-0.1s.png" id="3_ks48i"]
@@ -147,7 +147,7 @@ animations = [{
 "texture": SubResource("AtlasTexture_874u0")
 }],
 "loop": true,
-"name": &"HaybaleIdle",
+"name": &"Hay BaleIdle",
 "speed": 5.0
 }, {
 "frames": [{
@@ -188,12 +188,13 @@ corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
 [node name="Character" type="Node2D"]
-script = ExtResource("1_c7o1p")
+script = ExtResource("1_2l68p")
 
 [node name="Animator" type="AnimatedSprite2D" parent="."]
 unique_name_in_owner = true
+scale = Vector2(1.00152, 0.976624)
 sprite_frames = SubResource("SpriteFrames_vd224")
-animation = &"Idle"
+animation = &"Hay BaleIdle"
 
 [node name="RemoveHealth" type="ProgressBar" parent="."]
 unique_name_in_owner = true

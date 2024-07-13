@@ -12,54 +12,17 @@ extends Node2D
 @export_category("Stats")
 @export var Strength = 0
 @export var Sharpness = 0
-@onready var CritChance = int(round((1 - pow(0.99, float(Sharpness))) * 100))
+@onready var CritChance = float((1 - pow(0.99, float(Sharpness))) * 100)
+
+enum State {
+	WAITING,
+	PLAYER_TURN
+}
+
+var current_state = State.WAITING
 
 signal turnFinished
 signal UIFinished
-
-# Attack Utils
-func clamp_dmg(dmg:int,enemy):
-	if dmg > enemy.HP:
-		dmg = enemy.HP
-	return dmg
-
-func get_crit():
-	""" MAKE SURE ATTACK HAS
-		if isCrit: 
-			dmg *= 2
-	"""
-	var isCrit = false
-	if Utils.rng.randi_range(0,100) <= CritChance:
-		isCrit = true
-	return isCrit
-
-func print_damage(enemy,damage:int,crit:bool):
-	# CRIT DMG MUST BE MULTIPLIED IN FUNC!!!!!!!
-	var text = "{DMG} DMG!
-[color={selfColor}][{selfName}][/color] [color={enemyColor}]{Name}[/color] ({Level}): [color=#FF0000]{HP}/{MaxHP}[/color] {Status}".format({
-	"selfColor":SelfColor,
-	"selfName":Name,
-	"DMG":damage, 
-	"enemyColor":enemy.SelfColor, "Name":enemy.Name, "Level":enemy.Level, "HP":enemy.HP, "MaxHP":enemy.MaxHP, "Status":enemy.get_status()
-	})
-	if crit:
-		text = "[color=#FF0000]CRIT![/color] " + text
-	text = "[color={selfColor}][{selfName}][/color] ".format({"selfColor":SelfColor, "selfName":Name}) + text
-	Chat.say(text)
-
-# Attacks
-func basic_attack():
-	var Enemys = get_tree().get_nodes_in_group("Enemy")
-	for enemy in Enemys:
-		if not enemy.isDead:
-			var isCrit = get_crit()
-			var dmg = Strength - (enemy.Defense - 1)
-			if isCrit:
-				dmg *= 2
-			var realDMG = clamp_dmg(dmg,enemy)
-			enemy.HP -= realDMG
-			print_damage(enemy,dmg,isCrit)
-			return
 
 func _ready():
 	var ResourceJSONData = ResourceJSON.get_data()
@@ -79,6 +42,17 @@ func _ready():
 		pass #hero.connect(UIFinished, _onUIFinished())
 
 func _process(_delta):
+	match current_state:
+		State.WAITING:
+			pass
+		State.PLAYER_TURN:
+			if Input.is_action_just_pressed("Use"):
+				var EnemyArray = get_tree().get_nodes_in_group("Enemy")
+				if EnemyArray.size() > 0:
+					var PickedEnemies = [EnemyArray[0]]
+					Moves.use_move(self, "Basic Attack", PickedEnemies, Strength, CritChance)
+				Utils.heroesTurn = false
+				emit_signal("turnFinished")
 	if HP != 0:
 		var tween = get_tree().create_tween()
 		tween.tween_property(%Health, "value", int(round((float(HP) / MaxHP) * 100)), .1).set_ease(Tween.EASE_IN_OUT)
@@ -87,17 +61,23 @@ func _process(_delta):
 		tween.tween_property(%RemoveHealth, "value", int(round((float(HP) / MaxHP) * 100)), .3).set_ease(Tween.EASE_IN_OUT)
 	%HealthDisplay.text = "{hp}/{maxhp}".format({"hp":HP,"maxhp":MaxHP})
 
+func print_damage(enemy,damage:int,crit:bool):
+	# CRIT DMG MUST BE MULTIPLIED IN FUNC!!!!!!!
+	var text = "{DMG} DMG!
+[color={selfColor}][{selfName}][/color] [color={enemyColor}]{Name}[/color] ({Level}): [color=#FF0000]{HP}/{MaxHP}[/color] {Status}".format({
+	"selfColor":SelfColor,
+	"selfName":Name,
+	"DMG":damage, 
+	"enemyColor":enemy.SelfColor, "Name":enemy.Name, "Level":enemy.Level, "HP":enemy.HP, "MaxHP":enemy.MaxHP, "Status":enemy.get_status()
+	})
+	if crit:
+		text = "[color=#FF0000]CRIT![/color] " + text
+	text = "[color={selfColor}]{selfName}[/color] ".format({"selfColor":SelfColor, "selfName":Name.to_upper()}) + text
+	Chat.say(text)
+
 func playerturn():
 	Utils.heroesTurn = true
-	attackUI()
+	change_state(State.PLAYER_TURN)
 
-func attackUI():
-	while not Input.is_action_just_pressed("Use"):
-		await get_tree().process_frame
-	var attack = Moves.basic_attack.new(get_tree().get_first_node_in_group("Enemy"))
-	emit_signal("UIFinished")
-
-
-func _onUIFinished():
-	Utils.heroesTurn = false
-	emit_signal("turnFinished")
+func change_state(next_state):
+	current_state = next_state

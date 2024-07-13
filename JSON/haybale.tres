@@ -4,14 +4,14 @@
 data = {
 "general": {
 "color": "#FFBB00",
-"name": "Haybale"
+"name": "Hay Bale"
 },
 "health": {
 "maxhp": 75.0,
 "yoffset": -80.0
 },
 "stats": {
-"sharpess": 2.0,
+"sharpness": 2.0,
 "strength": 4.0
 }
 }

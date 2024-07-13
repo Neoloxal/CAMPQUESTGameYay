@@ -2,16 +2,32 @@ extends Node2D
 
 @export var Chat:RichTextLabel
 
+enum Turn {
+	HEROES,
+	ENEMIES
+}
+
+var current_state = Turn.HEROES
+
 func _process(_delta):
-	if not Utils.heroesTurn:
-		Chat.say("HEROES TURN")
-	var heroes = get_tree().get_nodes_in_group("Hero")
-	for hero in heroes:
-		hero.playerturn()
-		await hero.turnFinished
-	
-	Chat.say("ENEMIES TURN")
-	var enemies = get_tree().get_nodes_in_group("Enemy")
-	for enemy in enemies:
-		enemy.enemyturn()
-		await enemy.turnFinished
+	match current_state:
+		Turn.HEROES:
+			var heroes = get_tree().get_nodes_in_group("Hero")
+			for hero in heroes:
+				hero.playerturn()
+				await hero.turnFinished
+			switch_turn("enemy")
+		Turn.ENEMIES:
+			var enemies = get_tree().get_nodes_in_group("Enemy")
+			for enemy in enemies:
+				if !enemy.isDead:
+					enemy.enemyturn()
+					await enemy.turnFinished
+			switch_turn("hero")
+
+func switch_turn(turn):
+	match turn:
+		"hero":
+			current_state = Turn.HEROES
+		"enemy":
+			current_state = Turn.ENEMIES
