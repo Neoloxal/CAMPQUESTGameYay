@@ -1,7 +1,8 @@
 ![rsz_1rsz_logo](https://github.com/Neoloxal/CAMPQUESTGameYay/assets/136665350/dbab3805-0650-48ef-bf42-c27e71ce8dd7)
 
-This is game made by:
+Contributors:
 Neoloxal
+Epixium
 
 I (Neoloxal) DID NOT MAKE CAMPQUEST!!
 
