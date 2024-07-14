@@ -1,0 +1,16 @@
+[gd_resource type="JSON" format=3 uid="uid://c2byq564kko4b"]
+
+[resource]
+data = {
+"general": {
+"color": "#FF00FF",
+"name": "Error"
+},
+"stats": {
+"sharpness": 6.0,
+"soul": 6.0,
+"stamina": 6.0,
+"strength": 6.0,
+"swiftness": 6.0
+}
+}

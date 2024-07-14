@@ -1,23 +1,35 @@
 extends Node
 
 var ATK
+var CALLER
 var TARGETS
+var USED_MOVE
 var CritChance
 var isCrit
 var SelfColor
 var Name
 var Chat
+var attackSuccessful
 
-func use_move(caller, used_move:String, targets:Array, atk:float, critChance:float):
-	ATK = atk
+enum CLASS {NEUTRAL, STAMINA, STRENGTH, SOUL, SHARPNESS, SWIFTNESS}
+var classes = []
+
+func use_move(caller, used_move:String, targets:Array):
+	CALLER = caller
+	classes = [CALLER.ResourceJSONData["stats"]["stamina"], CALLER.ResourceJSONData["stats"]["strength"], CALLER.ResourceJSONData["stats"]["soul"], CALLER.ResourceJSONData["stats"]["sharpness"], CALLER.ResourceJSONData["stats"]["swiftness"]]
+	USED_MOVE = used_move
 	TARGETS = targets
-	CritChance = critChance
-	SelfColor = caller.SelfColor
-	Name = caller.Name
-	Chat = caller.Chat
+	ATK = CALLER.Attack
+	CritChance = CALLER.CritChance
+	SelfColor = CALLER.SelfColor
+	Name = CALLER.Name
+	Chat = CALLER.Chat
 	match used_move:
 		"Basic Attack":
-			use()
+			use(CLASS.NEUTRAL, ATK, 0)
+		"SP test":
+			use(CLASS.SOUL, 6, 4)
+	return attackSuccessful
 
 func get_crit() -> bool:
 	isCrit = false
@@ -30,16 +42,27 @@ func clamp_dmg(dmg:int,target) -> int:
 		dmg = target.HP
 	return dmg
 
-func use() -> int:
-	for target in TARGETS:
-		if not target.isDead:
-			get_crit()
-			if isCrit:
-				ATK *= 2
-			ATK -= (target.Defense - 1)
-			var DMG = clamp_dmg(ATK, target)
-			target.HP -= DMG
-			print_damage(target, DMG, isCrit)
+func use(type, effect, sp_cost) -> int:
+	if CALLER.SP >= sp_cost:
+		CALLER.SP -= sp_cost
+		var efficiency
+		if type != CLASS.NEUTRAL:
+			efficiency = (100 + (classes[fmod(type-1, 5)]-1)*25 + (classes[fmod(type, 5)]-1)*10 + (classes[fmod(type-2, 5)]-1)*10)/100
+		else:
+			efficiency = 1
+		for target in TARGETS:
+			if not target.isDead:
+				effect *= efficiency
+				get_crit()
+				if isCrit:
+					effect *= 2
+				effect -= (target.Defense)
+				var DMG = clamp_dmg(effect, target)
+				target.HP -= DMG
+				print_damage(target, DMG, isCrit)
+		attackSuccessful = true
+	else:
+		attackSuccessful = false
 	return OK
 
 func print_damage(enemy, damage:int, crit:bool):
@@ -60,7 +83,7 @@ func print_damage(enemy, damage:int, crit:bool):
 	text = text.format({
 		"selfColor": SelfColor,
 		"selfName": Name,
-		"move": "Basic Attack",
+		"move": USED_MOVE,
 		"DMG":damage,
 		"enemyColor":enemy.SelfColor, "Name":enemy.Name, "Level":enemy.Level, "HP":enemy.HP, "MaxHP":enemy.MaxHP, "Status":enemy.get_status()
 	})

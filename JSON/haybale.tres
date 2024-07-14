@@ -6,12 +6,11 @@ data = {
 "color": "#FFBB00",
 "name": "Hay Bale"
 },
-"health": {
-"maxhp": 75.0,
-"yoffset": -80.0
-},
 "stats": {
 "sharpness": 2.0,
-"strength": 4.0
+"soul": 2.0,
+"stamina": 6.0,
+"strength": 4.0,
+"swiftness": 1.0
 }
 }

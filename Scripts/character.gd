@@ -5,14 +5,22 @@ extends Node2D
 @onready var Name:String
 @onready var SelfColor:String
 @export var Chat: RichTextLabel
-@export_category("Health")
-@export var Yoffset = 0
-@export var MaxHP = 100
-@onready var HP = MaxHP
-@export_category("Stats")
-@export var Strength = 0
-@export var Sharpness = 0
-@onready var CritChance = float((1 - pow(0.99, float(Sharpness))) * 100)
+
+var ResourceJSONData
+
+var MaxHP = 100
+var HP = MaxHP
+var MaxSP = 15
+var SP = MaxSP
+
+var Attack = 0
+var CritChance = float((1 - pow(0.99, float(1))) * 100)
+
+@onready var HPBar = $HP
+@onready var LostHPBar = $LostHP
+@onready var SPBar = $SP
+@onready var LostSPBar = $LostSP
+@onready var SPWarnAnim = $SPWarning/WarnAnim
 
 enum State {
 	WAITING,
@@ -25,15 +33,18 @@ signal turnFinished
 signal UIFinished
 
 func _ready():
-	var ResourceJSONData = ResourceJSON.get_data()
+	ResourceJSONData = ResourceJSON.get_data()
 	Name = ResourceJSONData["general"]["name"]
 	SelfColor = ResourceJSONData["general"]["color"]
-	Chat.say(Name)
+	MaxHP = 50 + (ResourceJSONData["stats"]["stamina"] - 1) * 5
+	HP = MaxHP
+	MaxSP = 15 + (ResourceJSONData["stats"]["soul"] - 1) * 3
+	SP = MaxSP
+	Attack = (ResourceJSONData["stats"]["strength"] - 1) + 3
+	print(Attack)
+	CritChance = float((1 - pow(0.99, float(ResourceJSONData["stats"]["sharpness"] + 1))) * 100)
 	
 	%Animator.play("{Name}Idle".format({"Name":Name}))
-	
-	%Health.position.y += Yoffset
-	%RemoveHealth.position.y += Yoffset
 	
 	Chat.text = ""
 	
@@ -47,18 +58,29 @@ func _process(_delta):
 			pass
 		State.PLAYER_TURN:
 			if Input.is_action_just_pressed("Use"):
+				SPWarnAnim.play("RESET")
 				var EnemyArray = get_tree().get_nodes_in_group("Enemy")
+				for enemy in EnemyArray.size():
+					if EnemyArray[enemy].HP <= 0:
+						EnemyArray.remove_at(enemy)
 				if EnemyArray.size() > 0:
 					var PickedEnemies = [EnemyArray[0]]
-					Moves.use_move(self, "Basic Attack", PickedEnemies, Strength, CritChance)
-				Utils.heroesTurn = false
-				emit_signal("turnFinished")
+					if Moves.use_move(self, "SP test", PickedEnemies) == true:
+						emit_signal("turnFinished")
+					else:
+						SPWarnAnim.play("warn")
 	if HP != 0:
 		var tween = get_tree().create_tween()
-		tween.tween_property(%Health, "value", int(round((float(HP) / MaxHP) * 100)), .1).set_ease(Tween.EASE_IN_OUT)
+		tween.tween_property(HPBar, "value", int(round((float(HP) / MaxHP) * 100)), .1).set_ease(Tween.EASE_IN_OUT)
 		await tween.finished
 		tween = get_tree().create_tween()
-		tween.tween_property(%RemoveHealth, "value", int(round((float(HP) / MaxHP) * 100)), .3).set_ease(Tween.EASE_IN_OUT)
+		tween.tween_property(LostHPBar, "value", int(round((float(HP) / MaxHP) * 100)), .3).set_ease(Tween.EASE_IN_OUT)
+	if SP != 0:
+		var tween = get_tree().create_tween()
+		tween.tween_property(SPBar, "value", int(round((float(SP) / MaxSP) * 100)), .1).set_ease(Tween.EASE_IN_OUT)
+		await tween.finished
+		tween = get_tree().create_tween()
+		tween.tween_property(LostSPBar, "value", int(round((float(SP) / MaxSP) * 100)), .3).set_ease(Tween.EASE_IN_OUT)
 	%HealthDisplay.text = "{hp}/{maxhp}".format({"hp":HP,"maxhp":MaxHP})
 
 func print_damage(enemy,damage:int,crit:bool):
