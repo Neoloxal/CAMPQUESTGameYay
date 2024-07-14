@@ -42,3 +42,9 @@ body {
     color: white;
     position: relative;
 }
+
+.secret {
+    position: fixed;
+    bottom: 10px; right: 10px;
+    width: 3%;
+}
