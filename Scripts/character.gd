@@ -75,12 +75,11 @@ func _process(_delta):
 		await tween.finished
 		tween = get_tree().create_tween()
 		tween.tween_property(LostHPBar, "value", int(round((float(HP) / MaxHP) * 100)), .3).set_ease(Tween.EASE_IN_OUT)
-	if SP != 0:
-		var tween = get_tree().create_tween()
-		tween.tween_property(SPBar, "value", int(round((float(SP) / MaxSP) * 100)), .1).set_ease(Tween.EASE_IN_OUT)
-		await tween.finished
-		tween = get_tree().create_tween()
-		tween.tween_property(LostSPBar, "value", int(round((float(SP) / MaxSP) * 100)), .3).set_ease(Tween.EASE_IN_OUT)
+	var tween = get_tree().create_tween()
+	tween.tween_property(SPBar, "value", int(round((float(SP) / MaxSP) * 100)), .1).set_ease(Tween.EASE_IN_OUT)
+	await tween.finished
+	tween = get_tree().create_tween()
+	tween.tween_property(LostSPBar, "value", int(round((float(SP) / MaxSP) * 100)), .3).set_ease(Tween.EASE_IN_OUT)
 	%HealthDisplay.text = "{hp}/{maxhp}".format({"hp":HP,"maxhp":MaxHP})
 
 func print_damage(enemy,damage:int,crit:bool):

@@ -28,7 +28,7 @@ func use_move(caller, used_move:String, targets:Array):
 		"Basic Attack":
 			use(CLASS.NEUTRAL, ATK, 0)
 		"SP test":
-			use(CLASS.SOUL, 6, 4)
+			use(CLASS.SOUL, 6, 6)
 	return attackSuccessful
 
 func get_crit() -> bool:
