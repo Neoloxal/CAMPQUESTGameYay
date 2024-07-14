@@ -62,22 +62,23 @@ func _process(_delta):
 			if Input.is_action_just_pressed("Use"):
 				SPWarnAnim.play("RESET")
 				var EnemyArray = get_tree().get_nodes_in_group("Enemy")
+				var removed_enemies = 0
 				for enemy in EnemyArray.size():
-					if EnemyArray[enemy].HP <= 0:
-						EnemyArray.remove_at(enemy)
+					if EnemyArray[enemy-removed_enemies].HP <= 0:
+						EnemyArray.remove_at(enemy-removed_enemies)
+						removed_enemies += 1
 				if EnemyArray.size() > 0:
 					var PickedEnemies = [EnemyArray[0]]
-					if Moves.use_move(self, "SP test", PickedEnemies) == true:
+					if Moves.use_move(self, "Basic Attack", PickedEnemies) == true:
 						emit_signal("turnFinished")
 					else:
 						SPWarnAnim.play("warn")
-	if HP != 0:
-		var tween = get_tree().create_tween()
-		tween.tween_property(HPBar, "value", int(round((float(HP) / MaxHP) * 100)), .1).set_ease(Tween.EASE_IN_OUT)
-		await tween.finished
-		tween = get_tree().create_tween()
-		tween.tween_property(LostHPBar, "value", int(round((float(HP) / MaxHP) * 100)), .3).set_ease(Tween.EASE_IN_OUT)
 	var tween = get_tree().create_tween()
+	tween.tween_property(HPBar, "value", int(round((float(HP) / MaxHP) * 100)), .1).set_ease(Tween.EASE_IN_OUT)
+	await tween.finished
+	tween = get_tree().create_tween()
+	tween.tween_property(LostHPBar, "value", int(round((float(HP) / MaxHP) * 100)), .3).set_ease(Tween.EASE_IN_OUT)
+	tween = get_tree().create_tween()
 	tween.tween_property(SPBar, "value", int(round((float(SP) / MaxSP) * 100)), .1).set_ease(Tween.EASE_IN_OUT)
 	await tween.finished
 	tween = get_tree().create_tween()

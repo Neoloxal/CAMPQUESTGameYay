@@ -19,7 +19,7 @@ extends Node2D
 
 @onready var isDead = false
 
-signal turnFinished
+signal turn_finished
 
 func _ready():
 	%Animator.play("{Name}Idle".format({"Name":Name}))
@@ -102,7 +102,7 @@ func bite():
 			#var isCrit = get_crit(.75)
 			hero.HP -= DMG
 			print_damage(hero, DMG, false, "Bite")
-			return
+			emit_signal("turn_finished")
 
 func get_status():
 	var strStatus = ""
@@ -114,5 +114,6 @@ func get_status():
 	return strStatus
 
 func enemyturn():
+	print("going for my turn!")
 	call(Moves[Utils.rng.randi_range(0,Moves.size()-1)])
-	emit_signal("turnFinished")
+	emit_signal("turn_finished")

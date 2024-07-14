@@ -24,6 +24,16 @@ HPPL = 5
 Level = 3
 Moves = Array[String](["bite", "bite", "bite", "bite"])
 
+[node name="Enemy2" parent="." node_paths=PackedStringArray("Chat") groups=["Enemy"] instance=ExtResource("2_4np33")]
+position = Vector2(982, 532)
+Name = "Carpent"
+SelfColor = "#00BB00"
+Chat = NodePath("../Chat Layer/Chat")
+MaxHP = 25
+HPPL = 5
+Level = 3
+Moves = Array[String](["bite", "bite", "bite", "bite"])
+
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 layer = -1
 
@@ -53,3 +63,5 @@ text = "Chat:
 [color=#FF0000]CRIT![/color] 10 DMG!
 Carpent (3): [color=#FF0000]25/35[/color]"
 script = ExtResource("5_ak64a")
+
+[connection signal="turn_finished" from="Enemy" to="." method="_on_enemy_turn_finished"]

@@ -20,9 +20,11 @@ func _process(_delta):
 		Turn.ENEMIES:
 			var enemies = get_tree().get_nodes_in_group("Enemy")
 			for enemy in enemies:
+				print(enemies)
 				if !enemy.isDead:
 					enemy.enemyturn()
-					await enemy.turnFinished
+					await enemy.turn_finished
+					continue
 			switch_turn("hero")
 
 func switch_turn(turn):
