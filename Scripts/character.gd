@@ -14,6 +14,7 @@ var MaxSP = 15
 var SP = MaxSP
 
 var Attack = 0
+var Defense = 0
 var CritChance = float((1 - pow(0.99, float(1))) * 100)
 
 @onready var HPBar = $HP
@@ -38,6 +39,7 @@ func _ready():
 	SelfColor = ResourceJSONData["general"]["color"]
 	MaxHP = 50 + (ResourceJSONData["stats"]["stamina"] - 1) * 5
 	HP = MaxHP
+	Defense = (ResourceJSONData["stats"]["stamina"] - 1) * 0.75
 	MaxSP = 15 + (ResourceJSONData["stats"]["soul"] - 1) * 3
 	SP = MaxSP
 	Attack = (ResourceJSONData["stats"]["strength"] - 1) + 3

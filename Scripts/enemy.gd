@@ -98,7 +98,7 @@ func bite():
 	var heroes = get_tree().get_nodes_in_group("Hero")
 	for hero in heroes:
 		if hero.HP != 0:
-			var DMG = 6 + (Level - 1)
+			var DMG = 6 + (Level - 1) - floor(hero.Defense)
 			#var isCrit = get_crit(.75)
 			hero.HP -= DMG
 			print_damage(hero, DMG, false, "Bite")
